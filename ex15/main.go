@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+	"testing"
+)
 
 var justString string
 
@@ -22,14 +26,16 @@ func someFunc() {
 }
 
 func createHugeString(strSize int) string {
-	res := ""
+	//для эффективной конкатенации определим builder, чтобы не приходилось каждый раз выделять память при складывании строки
+	var sb strings.Builder
 	for i := 0; i < strSize; i++ {
-		res += "a"
+		sb.WriteString("a")
 	}
-	return res
+	return sb.String()
 }
 
 func main() {
 	someFunc()
 	fmt.Println(justString)
+	fmt.Println(testing.AllocsPerRun(1, someFunc))
 }
