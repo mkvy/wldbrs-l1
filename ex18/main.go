@@ -11,10 +11,9 @@ type Counter struct {
 	mx  sync.Mutex
 }
 
-func InitCounter(mutex *sync.Mutex) *Counter {
+func InitCounter() *Counter {
 	c := new(Counter)
 	c.cnt = 0
-	c.mx = *mutex
 	return c
 }
 
@@ -26,6 +25,8 @@ func (c *Counter) IncreaseCount() {
 }
 
 func (c *Counter) GetCount() int {
+	c.mx.Lock()
+	defer c.mx.Unlock()
 	return c.cnt
 }
 
@@ -43,8 +44,7 @@ func worker(workerId int, cntr *Counter, chEnd chan struct{}) {
 }
 
 func main() {
-	var mutex sync.Mutex
-	cntr := InitCounter(&mutex)
+	cntr := InitCounter()
 	ch := make(chan struct{})
 	go worker(1, cntr, ch)
 	go worker(2, cntr, ch)

@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+type test struct {
+}
+
 func checkUniqueChar(str string) bool {
 	//приведем к нижнему регистру
 	str = strings.ToLower(str)

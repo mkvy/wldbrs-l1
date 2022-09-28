@@ -1,22 +1,32 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
+
+func gor(ch chan int) {
+	fmt.Println("WAITING FOR DATA")
+	for z := range ch {
+		fmt.Println(z)
+	}
+	fmt.Println("rel gor")
+}
 
 func main() {
-	s := make([]int, 0, 4)
-	s = append(s, []int{1, 2, 3, 4}...)
-	fmt.Println(len(s), " s ", cap(s))
-	a := append(s, 5)
-	fmt.Println(a)
-	fmt.Println(len(a), " a ", cap(a))
-	fmt.Println(len(s), " s ", cap(s))
-	b := append(s, 6)
-	fmt.Println(len(b), " b ", cap(b))
-	fmt.Println(len(a), " a ", cap(a))
-	fmt.Println(len(s), " s ", cap(s))
-	fmt.Println(b)
-	fmt.Println(a)
-	fmt.Println(s)
 
-	fmt.Println(s[4])
+	ch := make(chan int, 3)
+	defer close(ch)
+
+	ch <- 1
+	ch <- 1
+	ch <- 1
+	gor(ch)
+	ch <- 1
+	ch <- 1
+
+	fmt.Println("end")
+	fmt.Println(<-ch)
+	fmt.Println(<-ch)
+	fmt.Println(<-ch)
+	fmt.Println("not now")
 }

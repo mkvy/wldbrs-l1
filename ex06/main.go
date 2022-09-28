@@ -54,6 +54,19 @@ func doSmth4(ctx context.Context) {
 	}
 }
 
+// через закрытие канала
+func doSmth5(ch chan bool) {
+	for {
+		// при чтении канала проверяем, закрыт ли канал
+		_, opened := <-ch
+		if !opened {
+			fmt.Println("Goroutine doSmth5 stops")
+			return
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+
 func main() {
 	//через пустую структуру. аналогично можно через bool / любой тип
 	ch := make(chan struct{})
@@ -82,6 +95,13 @@ func main() {
 	fmt.Println("doSmth4 starts")
 	go doSmth4(ctx)
 	time.Sleep(4 * time.Second)
+
+	fmt.Println("doSmth5 starts")
+	ch1 := make(chan bool)
+	go doSmth5(ch1)
+	time.Sleep(2 * time.Second)
+	close(ch1)
+
 	select {
 	case <-time.After(time.Second * 3):
 		fmt.Println("everything stopped")
