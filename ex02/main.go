@@ -30,7 +30,7 @@ func main() {
 	}
 	//ждем завершения всех горутин
 	wg.Wait()
-
+	fmt.Println("-------")
 	//буферизованный канал размером с число элементов
 	ch := make(chan struct{}, len(nums))
 	for _, v := range nums {
