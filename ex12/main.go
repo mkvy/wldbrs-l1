@@ -41,12 +41,12 @@ func (s *DefaultSet) PrintSet() {
 
 // множество на основе хеш-таблицы
 type HashSet struct {
-	vals map[string]*bool
+	vals map[string]bool
 }
 
 func CreateHashSet(strs []string) *HashSet {
 	s := new(HashSet)
-	s.vals = make(map[string]*bool)
+	s.vals = make(map[string]bool)
 	for _, v := range strs {
 		s.AddToSet(v)
 	}
@@ -55,9 +55,8 @@ func CreateHashSet(strs []string) *HashSet {
 
 func (s *HashSet) AddToSet(val string) bool {
 	//возвращает true, если элемента не было в множестве. если уже был, возвращает false
-	if s.vals[val] == nil {
-		s.vals[val] = new(bool)
-		*s.vals[val] = true
+	if _, ok := s.vals[val]; !ok {
+		s.vals[val] = true
 		return true
 	}
 	return false
