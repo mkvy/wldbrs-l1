@@ -3,12 +3,19 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 func printSquare(num int, wg *sync.WaitGroup) {
 	//сигнализируем что горутина из группы wg завершила выполнение
 	defer wg.Done()
 	fmt.Println(num * num)
+}
+
+func printSquareBufCh(num int, ch chan struct{}) {
+	fmt.Println(num * num)
+	//отправляем пустую структуру в канал
+	ch <- struct{}{}
 }
 
 func main() {
@@ -23,4 +30,17 @@ func main() {
 	}
 	//ждем завершения всех горутин
 	wg.Wait()
+
+	//буферизованный канал размером с число элементов
+	ch := make(chan struct{}, len(nums))
+	for _, v := range nums {
+		//в ходе итерации запускаем горутину функции, которая печатает квадрат
+		go printSquareBufCh(v, ch)
+	}
+	//считываем len(nums) раз значения полученные в канал, после чего канал блокируется
+	select {
+	case <-ch:
+	default:
+		time.Sleep(10 * time.Millisecond)
+	}
 }
